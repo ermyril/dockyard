@@ -1,0 +1,5 @@
+host: "db"
+database: "exampledb"
+user: "exampleuser"
+password: "examplepass"
+directory: "./backups"
