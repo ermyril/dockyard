@@ -3,10 +3,10 @@ package main
 import (
 	"github.com/ermyril/dockyard/config"
 
+	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"golang.org/x/net/context"
-	"fmt"
 	"os"
 	//"github.com/davecgh/go-spew/spew"
 )
@@ -23,8 +23,8 @@ func main() {
 	yard := GetDockyardClient(config.GetConfig())
 
 
-	yard.Backup()
-
+	//yard.Backup()
+	yard.Restore()
 }
 
 func GetDockyardClient(config config.Config) Dockyard {
