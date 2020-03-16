@@ -95,6 +95,7 @@ func SelectItem(itemsList List) string {
 
 
 	quit := make(chan struct{})
+	manualQuit := make(chan struct{})
 	go func() {
 		for {
 			ev := s.PollEvent()
@@ -102,7 +103,7 @@ func SelectItem(itemsList List) string {
 			case *tcell.EventKey:
 				switch ev.Key() {
 				case tcell.KeyEscape:
-					close(quit)
+					close(manualQuit)
 					return
 				case tcell.KeyEnter:
 					close(quit)
@@ -128,18 +129,23 @@ func SelectItem(itemsList List) string {
 	dur := time.Duration(0)
 
 
+	selectedItem := "idfk"
 
 loop:
 	for {
 		select {
-		case <-quit:
-			break loop
-		case <-time.After(time.Millisecond * 50):
+			case <-quit:
+				selectedItem = itemsList.Items[itemsList.cursor + itemsList.offset]
+				break loop
+			case <-manualQuit:
+				break loop
+			case <-time.After(time.Millisecond * 50):
 		}
+
 		start := time.Now()
 
 		itemsList.draw(s)
-			s.Clear()
+		s.Clear()
 
 		cnt++
 		dur += time.Now().Sub(start)
@@ -147,7 +153,7 @@ loop:
 
 	s.Fini()
 
-	return itemsList.Items[itemsList.cursor + itemsList.offset]
+	return selectedItem
 }
 
 

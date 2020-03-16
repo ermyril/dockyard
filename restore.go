@@ -3,17 +3,23 @@ package main
 import (
 	"fmt"
 	"github.com/ermyril/dockyard/list"
-	"strconv"
+	"log"
+	"io/ioutil"
 )
 
 func (yard *Dockyard) Restore() {
 
 	fileList := list.List{}
-
-	for i := 0; i < 50; i++ {
-		fileList.Items = append(fileList.Items, strconv.Itoa(i))
+	files, err := ioutil.ReadDir(yard.config.Directory)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	fmt.Println(list.SelectItem(fileList))
+	for _, file := range files {
+		fileList.Items = append(fileList.Items, file.Name())
+	}
 
+	selectedItem := list.SelectItem(fileList)
+
+	fmt.Println(selectedItem)
 }
